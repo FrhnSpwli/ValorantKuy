@@ -7,13 +7,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,9 +30,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -45,29 +54,42 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ValorantKuyTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color(0xFF111111)
                 ) {
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .background(Color(0xFF111111))
+                            .fillMaxSize()
+                    ) {
                         CenterAlignedTopAppBar(
-                            modifier = Modifier.background(Color.Blue),  // Change background color here
+                            modifier = Modifier.background(Color.Transparent), // Transparent app bar
                             title = {
                                 Text(
                                     text = "Valorant Agent",
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color(0xFFff4655),
+                                    fontSize = 32.sp
                                 )
                             }
                         )
-                        val mainViewModel: MainViewModel = viewModel(factory = MainViewModel.Factory)
+
+                        Spacer(
+                            modifier = Modifier
+                                .height(8.dp)
+                                .background(Color(0xFFff4655)) // Background for the spacer
+                        )
+
+                        val mainViewModel: MainViewModel =
+                            viewModel(factory = MainViewModel.Factory)
                         ListAgentsScreen(mainViewModel.mainUiState)
                     }
-
                 }
             }
         }
     }
+
 
     @Composable
     private fun ListAgentsScreen(mainUiState: MainUiState, modifier: Modifier = Modifier) {
@@ -80,11 +102,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun CenterText(text: String) {
-        // Wrap the content with a Box to apply the centering modifiers
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp), // Optional padding
+                .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -104,50 +125,56 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun AgentItem(agent: Agent) {
-        Box(
+        Surface(
             modifier = Modifier
-                .padding(16.dp)
-                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp),)
+                .fillMaxWidth()
+                .padding(16.dp, 8.dp)
+                .clip(MaterialTheme.shapes.medium)
                 .clickable {
                     val intent = Intent(this, DetailActivity::class.java)
                     intent.putExtra("AGENT", agent)
                     startActivity(intent)
-                }
+                },
+            color = Color.White
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
             ) {
-                // Agent Poster
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(agent.displayIcon)
+                        .data(agent.fullPortrait)
                         .crossfade(true)
-                        .build(), contentDescription = agent.displayName,
+                        .build(),
+                    contentDescription = agent.displayName,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
+                        .width(180.dp)
                         .clip(MaterialTheme.shapes.medium),
                     contentScale = ContentScale.Crop
                 )
 
-                // Agent Details
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = agent.displayName.toString(),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = agent.role?.displayName.toString(),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = agent.description.toString(), style = MaterialTheme.typography.bodyMedium)
-
-                // Other details like rating, genre, etc. can be added here
+                Column(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .wrapContentHeight(CenterVertically),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Text(
+                        text = agent.displayName.toString(),
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFff4655)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = agent.role?.displayName.toString(),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.Gray // Use a different color for role
+                    )
+                }
             }
         }
     }
