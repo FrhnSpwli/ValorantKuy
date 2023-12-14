@@ -123,7 +123,8 @@ class DetailActivity : ComponentActivity() {
                         contentDescription = selectedAgent?.role?.displayName,
                         modifier = Modifier
                             .background(Color(0xFFff4655))
-                            .width(24.dp)
+                            .width(22.dp)
+                            .height(22.dp)
                             .clip(MaterialTheme.shapes.medium),
                         contentScale = ContentScale.Crop
                     )
