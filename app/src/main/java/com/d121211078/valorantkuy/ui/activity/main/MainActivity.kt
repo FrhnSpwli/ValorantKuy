@@ -56,30 +56,33 @@ class MainActivity : ComponentActivity() {
             ValorantKuyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFF111111)
                 ) {
                     Column(
                         modifier = Modifier
-                            .background(Color(0xFF111111))
+//                            .background(Color(0xFFff4655))
                             .fillMaxSize()
                     ) {
-                        CenterAlignedTopAppBar(
-                            modifier = Modifier.background(Color.Transparent), // Transparent app bar
-                            title = {
-                                Text(
-                                    text = "Valorant Agent",
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color(0xFFff4655),
-                                    fontSize = 32.sp
-                                )
-                            }
-                        )
+                        Row (
+                            modifier = Modifier.padding(6.dp, 16.dp)
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context = LocalContext.current)
+                                    .data("https://1000logos.net/wp-content/uploads/2022/09/Valorant-Emblem.png")
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Logo",
+                                modifier = Modifier
+                                    .width(64.dp)
+                                    .background(Color.White)
+                            )
 
-                        Spacer(
-                            modifier = Modifier
-                                .height(8.dp)
-                                .background(Color(0xFFff4655)) // Background for the spacer
-                        )
+                            Text(
+                                text = "Valorant Agent",
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color(0xFFff4655),
+                                fontSize = 32.sp
+                            )
+                        }
 
                         val mainViewModel: MainViewModel =
                             viewModel(factory = MainViewModel.Factory)
@@ -129,7 +132,6 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 8.dp)
-                .clip(MaterialTheme.shapes.medium)
                 .clickable {
                     val intent = Intent(this, DetailActivity::class.java)
                     intent.putExtra("AGENT", agent)
@@ -140,6 +142,8 @@ class MainActivity : ComponentActivity() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color(0xFFff4655))
+                    .border(2.dp, Color(0xFFff4655))
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current)
@@ -149,8 +153,7 @@ class MainActivity : ComponentActivity() {
                     contentDescription = agent.displayName,
                     modifier = Modifier
                         .width(180.dp)
-                        .clip(MaterialTheme.shapes.medium),
-                    contentScale = ContentScale.Crop
+                        .background(Color.White)
                 )
 
                 Column(
@@ -166,14 +169,33 @@ class MainActivity : ComponentActivity() {
                         text = agent.displayName.toString(),
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFff4655)
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = agent.role?.displayName.toString(),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.Gray // Use a different color for role
-                    )
+                    Row {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(agent?.role?.displayIcon)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = agent?.role?.displayName,
+                            modifier = Modifier
+                                .background(Color(0xFFff4655))
+                                .width(36.dp)
+                                .height(36.dp)
+                                .clip(MaterialTheme.shapes.large)
+                        )
+
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = agent.role?.displayName.toString(),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White
+                        )
+                    }
+
                 }
             }
         }

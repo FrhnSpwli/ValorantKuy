@@ -88,7 +88,6 @@ class DetailActivity : ComponentActivity() {
                         .clip(MaterialTheme.shapes.medium),
                     contentScale = ContentScale.Crop
                 )
-                // Back button
                 IconButton(
                     onClick = { onBackPressed() },
                     modifier = Modifier
@@ -96,15 +95,6 @@ class DetailActivity : ComponentActivity() {
                         .padding(16.dp)
                 ) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-                // Like button
-                IconButton(
-                    onClick = { /* Handle like button click */ },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Like")
                 }
             }
 
@@ -124,12 +114,30 @@ class DetailActivity : ComponentActivity() {
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = selectedAgent?.role?.displayName.toString(),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.secondary
+                Row {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(selectedAgent?.role?.displayIcon)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = selectedAgent?.role?.displayName,
+                        modifier = Modifier
+                            .background(Color(0xFFff4655))
+                            .width(24.dp)
+                            .clip(MaterialTheme.shapes.medium),
+                        contentScale = ContentScale.Crop
                     )
-                )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = selectedAgent?.role?.displayName.toString(),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = selectedAgent?.description.toString(),
@@ -145,29 +153,7 @@ class DetailActivity : ComponentActivity() {
                     )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Action buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    ActionButton(Icons.Default.Info, "More Info") { /* Handle More Info click */ }
-                    ActionButton(Icons.Default.Send, "Send Message") { /* Handle Send Message click */ }
-                }
             }
-        }
-    }
-
-    @Composable
-    fun ActionButton(icon: ImageVector, label: String, onClick: () -> Unit) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier
-                .padding(8.dp)
-                .background(MaterialTheme.colorScheme.primary)
-                .clip(MaterialTheme.shapes.medium)
-        ) {
-            Icon(imageVector = icon, contentDescription = label, tint = Color.White)
         }
     }
 }
